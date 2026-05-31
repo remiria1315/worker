@@ -1,4 +1,4 @@
-name = "my-dynamic-worker"
+name = "www"
 main = "index.js"
 compatibility_date = "2026-05-31"
 
