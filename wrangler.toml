@@ -1,9 +1,7 @@
-name = "www"
+name = "wh47-15-7h15"
 main = "index.js"
 compatibility_date = "2026-05-31"
 
 [assets]
 directory = "public"
-
-[observability]
-enabled = true
+binding = "ASSETS"
