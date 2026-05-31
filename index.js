@@ -7,7 +7,7 @@ export default {
       <!DOCTYPE html>
       <html>
         <body>
-          <h1>動的サイトへようこそ！</h1>
+          <h1>hello world!</h1>
           <p>現在のサーバー時間は: ${now}</p>
         </body>
       </html>
