@@ -1,28 +1,18 @@
 export default {
   async fetch(request, env) {
-    // const url = new URL(request.url);
-    // const filePath = url.pathname.replace(/^\/dl\//, "");
-    // if (!filePath || filePath === url.pathname) {
-    //   return new Response("パスが指定されていません", { status: 400 });
-    // }
-    // const targetRequest = new Request(`${url.origin}/public/${filePath}`);
+    const url = new URL(request.url);
     
-    // try {
-    //   const response = await env.ASSETS.fetch(targetRequest);
-  
-    //   if (response.status === 404) {
-    //     console.error(targetRequest.toString()+" not found ");
-    //     return new Response("Not Found", { status: 404 });
-    //   }
-    //   const newHeaders = new Headers(response.headers);
-    //   newHeaders.set("Content-Disposition", `attachment; filename="${filePath.split('/').pop()}"`);
-
-    //   return new Response(response.body, {
-    //     status: response.status,
-    //     headers: newHeaders,
-    //   });
-    // } catch (e) {
-    //   return new Response(e.message, { status: 500 });
-    // }
+    if (url.pathname.startsWith('/dl/')) {
+        const filePath = url.pathname.replace(/^\/dl\//, "");
+        const response = await env.ASSETS.fetch(new Request(`${url.origin}/${filePath}`));
+        
+        if (response.status === 200) {
+            const newHeaders = new Headers(response.headers);
+            newHeaders.set("Content-Disposition", `attachment; filename="${filePath.split('/').pop()}"`);
+            return new Response(response.body, { headers: newHeaders });
+        }
+    }
+    
+    return env.ASSETS.fetch(request);
   },
 };
