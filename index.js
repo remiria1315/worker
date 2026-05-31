@@ -5,19 +5,23 @@ export default {
     if (!filePath || filePath === url.pathname) {
       return new Response("パスが指定されていません", { status: 400 });
     }
-
+    const targetRequest = new Request(`${url.origin}/public/${filePath}`);
+    
     try {
-      console.log(`Fetching: /public/${filePath}`);
-      const targetUrl = new URL(`/public/${filePath}`, url.origin);
-      const response = await env.ASSETS.fetch(new Request(targetUrl));
-      
+      const response = await env.ASSETS.fetch(targetRequest);
+  
       if (response.status === 404) {
-        return new Response(`File not found: ${filePath}`, { status: 404 });
+        return new Response("Not Found", { status: 404 });
       }
-
-      return response;
+      const newHeaders = new Headers(response.headers);
+      newHeaders.set("Content-Disposition", `attachment; filename="${filePath.split('/').pop()}"`);
+      
+      return new Response(response.body, {
+        status: response.status,
+        headers: newHeaders,
+      });
     } catch (e) {
-      return new Response(`Error: ${e.message}`, { status: 500 });
+      return new Response(e.message, { status: 500 });
     }
   },
 };
