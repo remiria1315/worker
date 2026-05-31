@@ -3,28 +3,21 @@ export default {
     const url = new URL(request.url);
     const filePath = url.pathname.replace(/^\/dl\//, "");
     if (!filePath || filePath === url.pathname) {
-      return new Response("ファイルパスを指定してください", { status: 400 });
-    }
-    if (filePath.includes("..")) {
-      return new Response("不正なパスです", { status: 403 });
+      return new Response("パスが指定されていません", { status: 400 });
     }
 
     try {
+      console.log(`Fetching: /public/${filePath}`);
       const targetUrl = new URL(`/public/${filePath}`, url.origin);
-      const file = await env.ASSETS.fetch(new Request(targetUrl));
+      const response = await env.ASSETS.fetch(new Request(targetUrl));
       
-      if (file.status === 404) {
-        return new Response("ファイルが見つかりません", { status: 404 });
+      if (response.status === 404) {
+        return new Response(`File not found: ${filePath}`, { status: 404 });
       }
 
-      return new Response(file.body, {
-        headers: {
-          ...file.headers,
-          "Content-Disposition": `attachment; filename="${filePath.split('/').pop()}"`,
-        },
-      });
+      return response;
     } catch (e) {
-      return new Response("サーバーエラーが発生しました", { status: 500 });
+      return new Response(`Error: ${e.message}`, { status: 500 });
     }
   },
 };
