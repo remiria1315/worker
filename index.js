@@ -14,6 +14,7 @@ export default {
       const response = await env.ASSETS.fetch(targetRequest);
   
       if (response.status === 404) {
+        console.error(targetRequest.toString()+" not found ");
         return new Response("Not Found", { status: 404 });
       }
       const newHeaders = new Headers(response.headers);
