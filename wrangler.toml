@@ -1,0 +1,6 @@
+name = "my-dynamic-worker"
+main = "index.js"
+compatibility_date = "2026-05-31"
+
+[observability]
+enabled = true
