@@ -1,5 +1,8 @@
 export default {
   async fetch(request, env) {
+    if (!env.ASSETS) {
+      return new Response("Error: ASSETS binding not found. Check wrangler.toml!", { status: 500 });
+    }
     const url = new URL(request.url);
     const filePath = url.pathname.replace(/^\/dl\//, "");
     if (!filePath || filePath === url.pathname) {
@@ -15,7 +18,7 @@ export default {
       }
       const newHeaders = new Headers(response.headers);
       newHeaders.set("Content-Disposition", `attachment; filename="${filePath.split('/').pop()}"`);
-      
+
       return new Response(response.body, {
         status: response.status,
         headers: newHeaders,
